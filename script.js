@@ -76,21 +76,3 @@
 // an error. In this case, it is used to access the main property of the weatherlnfo object, and then the temp property of that object.
 // . toFixed() is a method that formats a number with a specified number of digits after the decimal point.
 
-const API_KEY = "a11512fe573844db415fd39e8af13244";
-
-async function fetchUserWeatherDetails() {
-    try{
-        let city="goa";
-    // to use this link in the url of any browser then use the link written as below : "https://api.openweathermap.org/data/2.5/weather?q=goa&appid=a11512fe573844db415fd39e8af13244&units=metric" 
-    // when using in the url directly then we dont use ${} , we directly write the city name and api key 
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
-    const data = await response.json();
-    console.log("weather : ",data);
-
-    let para=document.querySelector('.content');
-    para.textContent=data.main.temp;
-    }
-    catch(err){
-
-    }
-}
