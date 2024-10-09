@@ -18,7 +18,7 @@
             <h1>Weather App</h1>
 
             <div class="tab-container">
-                <p class="tab" data-userWeather>Your Weather</p>
+                <p class="tab" data-yourWeather>Your Weather</p>
                 <p class="tab" data-searchWeather>Search Weather</p>
             </div>
 
@@ -31,7 +31,7 @@
                     <img src="./assets/location.png" alt="" loading="lazy" width="80" height="80">
                     <p>Grant Location Access</p>
                     <p>Allow Access to get weather Information</p>
-                    <button class="btn" data=-grantAccess>Grant Access</button>
+                    <button class="btn" grantAccessBtn>Grant Access</button>
                 </div>
 
                 <!-- search weather  -->
@@ -47,7 +47,7 @@
                 </div>
 
                 <!-- show weather info  -->
-                 <div class="user-info-container">
+                 <div class="weather-info-container">
                     
                     <!-- city name anf flag  -->
                     <div class="name">
@@ -81,14 +81,20 @@
                           <!-- card 3 -->
                           <div class="parameter">
                             <img src="./assets/cloud.png" alt="" loading="lazy">
-                            <p>ClOUD</p>
+                            <p>CLOUD</p>
                             <p data-cloud></p>
                           </div>
                     </div>
                     
                  </div>
+
+                 <!-- error - not found  -->
+                  <div class="error-not-found">
+                    <img src="./assets/not-found.png" alt="" loading="lazy" width="300" height="300">
+                  </div>
             </div>
         </div>
     </div>
+    <script src="./script.js"></script>
 </body>
 </html>

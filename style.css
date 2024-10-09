@@ -1,0 +1,22 @@
+.current-tab{
+    background-color: green;
+}
+.grant-location-container{
+    display: none;
+}
+.search-container{
+    display: none;
+}
+.loading-container{
+    display: none;
+}
+.weather-info-container{
+    display: none;
+}
+.error-not-found{
+    display: none;
+}
+
+.active{
+    display: flex;
+}

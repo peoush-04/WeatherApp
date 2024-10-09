@@ -77,7 +77,10 @@
 // . toFixed() is a method that formats a number with a specified number of digits after the decimal point.
 
 
-const userTab = document.querySelector("[data-userWeather]");
+// Documentation - see here we have two tabs first your weather and next search weather 
+// in "your weather" tab we have two tabs , one when u dont hv your current location ka latitude longitude then show grant access wala container else when u have current location ka lat n long safe/stored then display the weatherInfoContainer (i.e, the container displaying the weather ka info) 
+
+const yourWeatherTab = document.querySelector("[data-yourWeather]");
 const searchTab = document.querySelector("[data-searchWeather]");
 
 const userContainer = document.querySelector(".weather-container");
@@ -86,30 +89,111 @@ const grantAccessContainer = document.querySelector(".grant-location-container")
 const searchForm = document.querySelector(".search-container");
 
 const loadingScreen = document.querySelector(".loading-container");
-const userInfoContainer = document.querySelector(".user-info-container");
+const weatherInfoContainer = document.querySelector(".weather-info-container");
 
-const currenTab = userTab;
+const errorNotFound =  document.querySelector(".error-not-found");
+
 const API_KEY = "d1845658f92b31c64bd94f06f7188c9c";
 
-// see when we r at Your weather then a grey backgrd comes below the text and when we click on search weather then on search weather ka backgrd the grey color comes , so the current-tab wala class contains the css of the backgrd grey color  
-currenTab.classList.add("current-tab");
+// see when we r at Your weather then a grey backgrd comes below the text and when we click on search weather then on search weather ka backgrd the grey color comes , so the current-tab wala class contains the css of the backgrd grey color  , and initially we are by default at Your weather wala tab so add current tab wala class in it
+var currentTab = yourWeatherTab;
+currentTab.classList.add("current-tab");
 
-function switchTab(clickedTab){
-    if(currenTab!=clickedTab){
-        // suppose initially we r at Your weather tab therefore below the your weather text backgrd color grey appears , but when we switch tab to search weather(clickedTab) then remove the grey color backgrd (current-tab class) from the initial tab (your weather) and add the current-tab wala css class in the currentTab which is now Search weather(clickedTab)
-        currenTab.classList.remove("current-tab");
-        currenTab=clickedTab;
-        currenTab.classList.add("current-tab");
+// initially we will be always at grant access wala container 
+grantAccessContainer.classList.add("active");
+
+const grantAccessBtn = document.querySelector("[grantAccessBtn]");
+grantAccessBtn.addEventListener("click",getCurrentLocation);
+
+function getCurrentLocation() {
+    // this is the syntax to get your current location , see w3schools (simply copy and paste) 
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    }
+    else {
+        //HW - show an alert for no geolocation support available
     }
 }
 
-userTab.addEventListener("click",()=>{
-    //passed clicked tab as input parameter
-    switchTab(userTab);
-});
+function showPosition(position) {
 
-searchTab.addEventListener("click",()=>{
-    //passed clicked tab as input parameter
-    switchTab(searchTab);
-});
+    const userCoordinates = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude,
+    }
+
+    // The sessionStorage object let you store key/value pairs in the browser.
+    // Note : The sessionStorage object stores data for only one session.
+            // (The data is deleted when the browser is closed).
+
+    sessionStorage.setItem("user-coordinates", JSON.stringify(userCoordinates));
+    // see now got the latitue and longitude of current location , so fetch weather info by api call 
+    fetchUserWeatherInfo_LatLong(userCoordinates);
+}
+
+async function fetchUserWeatherInfo_LatLong(userCoordinates)
+{
+    // see while fetching the weather info from the server , till then show a loading screen for better user experience but Note : your grant access wala container is still active so before displyaing loading screen remove grant access wala container 
+    grantAccessContainer.classList.remove("active");
+    loadingScreen.classList.add("active");
+
+    // API Call
+    try{
+        const lat = userCoordinates.lat;
+        const lon = userCoordinates.lon;
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+          );
+
+        const data = await response.json();
+        // at line 146 your api call is successful so remove the loading screen and make weatherContainer visible and render the data/information dynamically from the api call to the div/conatiners of our weatherContainer
+        loadingScreen.classList.remove("active");
+        weatherInfoContainer.classList.add("active");
+        renderWeatherInfo(data);
+
+    }
+    catch(err){
+        // if some error occurs then now error not-found wala png but before that remove the loading screen 
+        loadingScreen.classList.remove("active");
+        errorNotFound.classList.add("active");
+    }
+
+}
+
+function renderWeatherInfo(weatherInfo){
+    //firstly, we have to fetch the elements 
+
+    const cityName = document.querySelector("[data-cityName]");
+    const countryIcon = document.querySelector("[data-countryIcon]");
+    const desc = document.querySelector("[data-weatherDesc]");
+    const weatherIcon = document.querySelector("[data-weatherIcon]");
+    const temp = document.querySelector("[data-temp]");
+    const windspeed = document.querySelector("[data-windSpeed]");
+    const humidity = document.querySelector("[data-humidity]");
+    const cloudiness = document.querySelector("[data-cloud]");
+
+    //fetch values from weatherINfo object and put it UI elements
+    cityName.innerText = weatherInfo?.name;
+    //just a cdn link to get the source path of the image 
+    countryIcon.src = `https://flagcdn.com/144x108/${weatherInfo?.sys?.country.toLowerCase()}.png`;
+    desc.innerText = weatherInfo?.weather?.[0]?.description;
+    weatherIcon.src = `http://openweathermap.org/img/w/${weatherInfo?.weather?.[0]?.icon}.png`;
+    temp.innerText = `${weatherInfo?.main?.temp} °C`;
+    windspeed.innerText = `${weatherInfo?.wind?.speed} m/s`;
+    humidity.innerText = `${weatherInfo?.main?.humidity}%`;
+    cloudiness.innerText = `${weatherInfo?.clouds?.all}%`;
+
+}
+// completed the grant access location 
+
+
+function switchTab(clickedTab){
+    if(currentTab!=clickedTab){
+        // suppose initially we r at Your weather tab therefore below the your weather text backgrd color grey appears , but when we switch tab to search weather(clickedTab) then remove the grey color backgrd (current-tab class) from the initial tab (your weather) and add the current-tab wala css class in the currentTab which is now Search weather(clickedTab)
+        currentTab.classList.remove("current-tab");
+        currentTab=clickedTab;
+        currentTab.classList.add("current-tab");
+    
+    }
+}
 
