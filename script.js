@@ -76,3 +76,40 @@
 // an error. In this case, it is used to access the main property of the weatherlnfo object, and then the temp property of that object.
 // . toFixed() is a method that formats a number with a specified number of digits after the decimal point.
 
+
+const userTab = document.querySelector("[data-userWeather]");
+const searchTab = document.querySelector("[data-searchWeather]");
+
+const userContainer = document.querySelector(".weather-container");
+
+const grantAccessContainer = document.querySelector(".grant-location-container");
+const searchForm = document.querySelector(".search-container");
+
+const loadingScreen = document.querySelector(".loading-container");
+const userInfoContainer = document.querySelector(".user-info-container");
+
+const currenTab = userTab;
+const API_KEY = "d1845658f92b31c64bd94f06f7188c9c";
+
+// see when we r at Your weather then a grey backgrd comes below the text and when we click on search weather then on search weather ka backgrd the grey color comes , so the current-tab wala class contains the css of the backgrd grey color  
+currenTab.classList.add("current-tab");
+
+function switchTab(clickedTab){
+    if(currenTab!=clickedTab){
+        // suppose initially we r at Your weather tab therefore below the your weather text backgrd color grey appears , but when we switch tab to search weather(clickedTab) then remove the grey color backgrd (current-tab class) from the initial tab (your weather) and add the current-tab wala css class in the currentTab which is now Search weather(clickedTab)
+        currenTab.classList.remove("current-tab");
+        currenTab=clickedTab;
+        currenTab.classList.add("current-tab");
+    }
+}
+
+userTab.addEventListener("click",()=>{
+    //passed clicked tab as input parameter
+    switchTab(userTab);
+});
+
+searchTab.addEventListener("click",()=>{
+    //passed clicked tab as input parameter
+    switchTab(searchTab);
+});
+
