@@ -106,17 +106,18 @@ const grantAccessBtn = document.querySelector("[grantAccessBtn]");
 grantAccessBtn.addEventListener("click",getCurrentLocation);
 
 function getCurrentLocation() {
-    // this is the syntax to get your current location , see w3schools (simply copy and paste) 
-    if(navigator.geolocation) {
+    // this is the syntax to get your current location , see w3schools (simply copy and paste)
+    
+    if(navigator.geolocation) { 
         navigator.geolocation.getCurrentPosition(showPosition);
     }
     else {
         //HW - show an alert for no geolocation support available
+        alert('GeoLocation Not Supported');
     }
 }
 
 function showPosition(position) {
-
     const userCoordinates = {
         lat: position.coords.latitude,
         lon: position.coords.longitude,
@@ -200,6 +201,7 @@ searchTab.addEventListener("click",()=>{
         //remove active classes from all other tabs
         grantAccessContainer.classList.remove("active");
         weatherInfoContainer.classList.remove("active");
+        errorNotFound.classList.remove("active");
 
         searchForm.classList.add("active");
     }
@@ -215,6 +217,7 @@ yourWeatherTab.addEventListener("click",()=>{
             //remove active classes from all other tabs
             searchForm.classList.remove("active");
             weatherInfoContainer.classList.remove("active");
+            errorNotFound.classList.remove("active");
 
             getfromSessionStorage();
         }
