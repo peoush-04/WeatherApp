@@ -145,10 +145,10 @@ async function fetchUserWeatherInfo_LatLong(userCoordinates)
             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
           );
 
-        const data = await response.json();
+         const data = await response.json();
         // at line 146 your api call is successful so remove the loading screen and make weatherContainer visible and render the data/information dynamically from the api call to the div/conatiners of our weatherContainer
         loadingScreen.classList.remove("active");
-        weatherInfoContainer.classList.add("active");
+        // first render the data from api call in thhe userContainer then display the userContainer
         renderWeatherInfo(data);
 
     }
@@ -183,17 +183,86 @@ function renderWeatherInfo(weatherInfo){
     humidity.innerText = `${weatherInfo?.main?.humidity}%`;
     cloudiness.innerText = `${weatherInfo?.clouds?.all}%`;
 
+    // all datas from the api call were rendered in the UL elements so now make the weatherInfoContainer visible 
+    weatherInfoContainer.classList.add("active");
 }
-// completed the grant access location 
 
+// ****** completed the grant access location ***********
+// now write the logic for switch tab , that is when I click on Search weather wala tab then search weather wala conatiner must be displayed and when i click on Your weather wala tab then 2 cases : if lat and longi of current location avaiable(stored in session Storage) then display the weatherInfoContainer else display the grant access Conatiner 
 
-function switchTab(clickedTab){
-    if(currentTab!=clickedTab){
-        // suppose initially we r at Your weather tab therefore below the your weather text backgrd color grey appears , but when we switch tab to search weather(clickedTab) then remove the grey color backgrd (current-tab class) from the initial tab (your weather) and add the current-tab wala css class in the currentTab which is now Search weather(clickedTab)
-        currentTab.classList.remove("current-tab");
-        currentTab=clickedTab;
+searchTab.addEventListener("click",()=>{
+    if(currentTab != searchTab)
+    {
+        currentTab = searchTab;
+        yourWeatherTab.classList.remove("current-tab");
         currentTab.classList.add("current-tab");
     
+        //remove active classes from all other tabs
+        grantAccessContainer.classList.remove("active");
+        weatherInfoContainer.classList.remove("active");
+
+        searchForm.classList.add("active");
     }
+})
+
+yourWeatherTab.addEventListener("click",()=>{
+    if(currentTab != yourWeatherTab)
+        {
+            currentTab = yourWeatherTab;
+            searchTab.classList.remove("current-tab");
+            currentTab.classList.add("current-tab");
+        
+            //remove active classes from all other tabs
+            searchForm.classList.remove("active");
+            weatherInfoContainer.classList.remove("active");
+
+            getfromSessionStorage();
+        }
+})
+
+function getfromSessionStorage() {
+    const localCoordinates = sessionStorage.getItem("user-coordinates");
+    if(localCoordinates == null) {
+        //agar local coordinates nahi hai toh display grant access wala conatiner 
+        grantAccessContainer.classList.add("active");
+    }
+    // else display the weather info of the curretn location using the lat and longi 
+    else {
+        const coordinates = JSON.parse(localCoordinates);
+        fetchUserWeatherInfo_LatLong(coordinates);
+    }
+
 }
 
+// ******** completed the logic of tag switching ***************
+
+// Now , the logic of search city weather is left 
+
+const searchInput = document.querySelector("[data-searchInput]");
+searchForm.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    if(searchInput.value == "")
+        return;
+    else{
+        let city = searchInput.value;
+        fetchUserWeatherInfo_City(city);
+    }
+});
+
+async function fetchUserWeatherInfo_City(city){
+    loadingScreen.classList.add("active");
+    try{
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+          );
+
+        const data = await response.json();
+        // got the data from the server , so remove loading screen 
+        loadingScreen.classList.remove("active");
+        renderWeatherInfo(data);
+    }
+    catch(err){
+        loadingScreen.classList.remove("active");
+        errorNotFound.classList.add("active");
+    }
+}
