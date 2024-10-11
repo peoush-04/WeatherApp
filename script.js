@@ -267,5 +267,6 @@ async function fetchUserWeatherInfo_City(city){
     catch(err){
         loadingScreen.classList.remove("active");
         errorNotFound.classList.add("active");
+        
     }
 }
