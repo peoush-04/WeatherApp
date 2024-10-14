@@ -253,20 +253,26 @@ searchForm.addEventListener("submit",(e)=>{
 });
 
 async function fetchUserWeatherInfo_City(city){
+    console.log("hi");
+    errorNotFound.classList.remove("active");
     loadingScreen.classList.add("active");
     try{
         const response = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
           );
+          if(!response.ok){
+            throw new Error("City Not found");
+          }
 
         const data = await response.json();
         // got the data from the server , so remove loading screen 
         loadingScreen.classList.remove("active");
+        
         renderWeatherInfo(data);
     }
     catch(err){
         loadingScreen.classList.remove("active");
+        weatherInfoContainer.remove("active");
         errorNotFound.classList.add("active");
-        
     }
 }
