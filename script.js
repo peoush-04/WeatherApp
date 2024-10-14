@@ -136,6 +136,7 @@ async function fetchUserWeatherInfo_LatLong(userCoordinates)
 {
     // see while fetching the weather info from the server , till then show a loading screen for better user experience but Note : your grant access wala container is still active so before displyaing loading screen remove grant access wala container 
     grantAccessContainer.classList.remove("active");
+    errorNotFound.classList.remove("activeimg");
     loadingScreen.classList.add("active");
 
     // API Call
@@ -156,7 +157,7 @@ async function fetchUserWeatherInfo_LatLong(userCoordinates)
     catch(err){
         // if some error occurs then now error not-found wala png but before that remove the loading screen 
         loadingScreen.classList.remove("active");
-        errorNotFound.classList.add("active");
+        errorNotFound.classList.add("activeimg");
     }
 
 }
@@ -185,6 +186,7 @@ function renderWeatherInfo(weatherInfo){
     cloudiness.innerText = `${weatherInfo?.clouds?.all}%`;
 
     // all datas from the api call were rendered in the UL elements so now make the weatherInfoContainer visible 
+    errorNotFound.classList.remove("activeimg");
     weatherInfoContainer.classList.add("active");
 }
 
@@ -201,7 +203,7 @@ searchTab.addEventListener("click",()=>{
         //remove active classes from all other tabs
         grantAccessContainer.classList.remove("active");
         weatherInfoContainer.classList.remove("active");
-        errorNotFound.classList.remove("active");
+        errorNotFound.classList.remove("activeimg");
 
         searchForm.classList.add("active");
     }
@@ -217,7 +219,7 @@ yourWeatherTab.addEventListener("click",()=>{
             //remove active classes from all other tabs
             searchForm.classList.remove("active");
             weatherInfoContainer.classList.remove("active");
-            errorNotFound.classList.remove("active");
+            errorNotFound.classList.remove("activeimg");
 
             getfromSessionStorage();
         }
@@ -254,7 +256,7 @@ searchForm.addEventListener("submit",(e)=>{
 
 async function fetchUserWeatherInfo_City(city){
     console.log("hi");
-    errorNotFound.classList.remove("active");
+    errorNotFound.classList.remove("activeimg");
     loadingScreen.classList.add("active");
     try{
         const response = await fetch(
@@ -272,7 +274,7 @@ async function fetchUserWeatherInfo_City(city){
     }
     catch(err){
         loadingScreen.classList.remove("active");
-        weatherInfoContainer.remove("active");
-        errorNotFound.classList.add("active");
+        weatherInfoContainer.classList.remove("active");
+        errorNotFound.classList.add("activeimg");
     }
 }
